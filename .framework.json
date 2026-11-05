@@ -1,0 +1,23 @@
+{
+  "format": "dsh-framework-pack",
+  "version": 1,
+  "id": "dsh-plugin-product-framework",
+  "name": "DSH 产品型插件（core / host / agent / ui 四层）",
+  "variables": {
+    "name": "dsh-remote-server",
+    "display": "Remote Server",
+    "prefix": "rsm",
+    "channel": "/remote-server",
+    "dataDir": "dsh-remote-server",
+    "tool": "rsm_status"
+  },
+  "layers": [
+    "00-base",
+    "10-core",
+    "20-host",
+    "30-agent",
+    "40-ui",
+    "50-tests"
+  ],
+  "createdAt": "2026-11-05T18:35:22.075Z"
+}

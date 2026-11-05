@@ -1,0 +1,69 @@
+# 远程服务 / Remote Server (dsh-remote-server)
+#
+# 1) Host row: 服务端进程管理、.env 账号密码、设备列表、RPC 通道。
+# 2) Conversation preset: a read-only assistant that can inspect and control
+#    the self-hosted ds-harness-remote server (rsm_* tools).
+#
+# Keep the preset free of shell/write plugins: that is the read-only boundary.
+- insert:
+    - id: dsh-remote-server
+      name: 'dsh-remote-server'
+
+    - id: preset-dsh-remote-server
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: dsh-remote-server
+        name: 远程服务
+        description: 查看和控制本机自建的 ds-harness-remote 服务端：启停、账号密码、已授权设备。只读文件，不会改动项目。
+        order: 60
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: |-
+                You are 远程服务, the assistant inside the DSH Remote Server plugin.
+                Use rsm_status / rsm_service / rsm_account / rsm_devices when the user asks
+                about the self-hosted ds-harness-remote server on this machine. Never echo a
+                password back; describe it as "已设置" instead. After changing the account or
+                password, tell the user a service restart is required. Read files and search
+                the web when useful, but never modify the user's files.
+          - id: time-context
+            name: '@deepseek-ai/dsh-time-context'
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+            config:
+              read: true
+              readImage: true
+              write: false
+              edit: false
+          # DSH 0.2.1-rc.3 requires this setting and gives it no default.
+          - id: tool-fs-search
+            name: '@deepseek-ai/dsh-tool-fs-search'
+            config:
+              sampleOverCapGlobResults: false
+          - id: tool-web
+            name: '@deepseek-ai/dsh-tool-web'
+            config:
+              search: true
+              fetch: true
+          - id: tool-ask-user
+            name: '@deepseek-ai/dsh-tool-ask-user'
+          - id: compaction
+            name: cordis:group
+            group: true
+            isolate:
+              compaction: true
+              toolResultPruner: true
+            config:
+              - id: compaction-basic
+                name: '@deepseek-ai/dsh-compaction-basic'
+              - id: command-compact
+                name: '@deepseek-ai/dsh-command-compact'
+              - id: tool-result-pruner
+                name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+                config:
+                  thresholdChars: 8192
+                  headChars: 4096
+                  tailChars: 1024
+          - id: dsh-remote-server-tools
+            name: 'dsh-remote-server/agent'

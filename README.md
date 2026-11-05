@@ -88,7 +88,7 @@ dsh plugin --profile desktop add link:<上面这个绝对路径>
 
 ## 架构
 
-按 [dsh-plugin-product-framework](https://github.com/) 的四层组织，依赖只向下：
+按 dsh-plugin-product-framework 的四层组织，依赖只向下：
 
 ```
 ui ──api/RPC──▶ host ──纯函数──▶ core

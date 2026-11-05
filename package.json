@@ -2,6 +2,19 @@
   "name": "dsh-remote-server",
   "version": "0.1.0",
   "description": "远程服务 —— 在 DSH 侧栏管理本机自建的 ds-harness-remote 服务端（启停、账号密码、设备）",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soulNebula/dsh-dsh-go-server.git"
+  },
+  "homepage": "https://github.com/soulNebula/dsh-dsh-go-server#readme",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "ds-harness-remote",
+    "remote-server"
+  ],
   "type": "module",
   "main": "./lib/index.js",
   "exports": {

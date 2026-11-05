@@ -341,7 +341,17 @@ export function App({ rpc, t }) {
     setError('')
     setNotice('')
     try {
-      await remote('host.account.login', { email, password })
+      // Check the typed credentials against the local Server first: a mismatch
+      // is then reported as "wrong email or password", instead of the Remote
+      // plugin's opaque failure after an address mismatch.
+      await api.call('account/test', { email, password })
+      try {
+        await remote('host.account.login', { email, password })
+      } catch (error) {
+        // The local server accepted the account, so a Remote failure here is
+        // most likely the Remote plugin still talking to another server.
+        throw new Error(`${error.message}（本地服务端已接受该账号；请确认上方 Remote Server 地址已生效）`)
+      }
       setRemoteForm(previous => ({ ...previous, password: '' }))
       setNotice(t('remoteRegistered'))
       await refreshRemote()
@@ -488,6 +498,7 @@ export function App({ rpc, t }) {
                 {t('remoteRegister')}
               </button>
             </div>
+            <p className="p-hint">{t('remoteAccountHint', { account: (config && config.account) || t('notConfigured') })}</p>
             <p className="p-hint">{t('remoteHint')}</p>
           </>
         )}
